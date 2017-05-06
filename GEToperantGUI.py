@@ -20,14 +20,33 @@ def saveoutput():
     if GETprofile == None or MPC_filenames == None:
         showerror('Error! Profile or data file selection.', 'Please select a data profile and Med-PC data files first.')
     else:
-        GEToperant.GEToperant(GETprofile, MPC_filenames, outputfile)
+        GEToperant.GEToperant(GETprofile, MPC_filenames, outputfile,
+                              exportfilename = Header_Filename.get(),
+                              exportstartdate = Header_StartDate.get(),
+                              exportenddate = Header_EndDate.get(),
+                              exportsubject = Header_Subject.get(),
+                              exportexperiment = Header_Experiment.get(),
+                              exportgroup = Header_Group.get(),
+                              exportbox = Header_Box.get(),
+                              exportstarttime = Header_StartTime.get(),
+                              exportendtime = Header_EndTime.get(),
+                              exportmsn = Header_MSN.get())
 
 def GETexpress():
     GETprofile = askopenfilename(title = 'Select data profile', filetypes =  [('Excel', '*.xlsx')])
     MPC_filenames = askopenfilenames(title = 'Select files to import')
     outputfile = asksaveasfilename(title = 'Save output file as', defaultextension='.xlsx', filetypes=(('Excel', '*.xlsx'),('All Files', '*.*')))
-    GEToperant.GEToperant(GETprofile, MPC_filenames, outputfile)
-
+    GEToperant.GEToperant(GETprofile, MPC_filenames, outputfile,
+                              exportfilename = Header_Filename.get(),
+                              exportstartdate = Header_StartDate.get(),
+                              exportenddate = Header_EndDate.get(),
+                              exportsubject = Header_Subject.get(),
+                              exportexperiment = Header_Experiment.get(),
+                              exportgroup = Header_Group.get(),
+                              exportbox = Header_Box.get(),
+                              exportstarttime = Header_StartTime.get(),
+                              exportendtime = Header_EndTime.get(),
+                              exportmsn = Header_MSN.get())
 def helpme():
     helpwindow = Toplevel()
     helpwindow.title('How to use GEToperant')
@@ -35,14 +54,15 @@ def helpme():
     helptext.pack(side= 'top')
     scroll = Scrollbar(helpwindow, command = helptext.yview)
     helptext.configure(yscrollcommand = scroll.set)
-    helptext.tag_configure('regular', font=('Verdana', 12))
+    helptext.tag_configure('regular', font=('Verdana', 11))
     howtoGET = """
     How to use GEToperant
 
-    Using GEToperant involves three steps.
+    Using GEToperant involves four steps.
     1. Select a data profile
     2. Open your Med PC raw data file(s)
-    3. Save your output
+    3. Use the checkboxes to select which headers you wish to export
+    4. Save your output
 
     Your data profile tells GEToperant what data you want extracted
     and what to label each element as. You can extract:
@@ -119,25 +139,26 @@ def helpme():
 def aboutGET():
     aboutme = Toplevel()
     aboutme.title('About GEToperant')
-    abouttext = Text(aboutme, height = 22, width = 75)
+    abouttext = Text(aboutme, height = 24, width = 75)
     abouttext.pack(side= 'top')
-    abouttext.tag_configure('regular', font=('Verdana', 12))
+    abouttext.tag_configure('regular', font=('Verdana', 11))
     about = """
     GEToperant is a general extraction tool for Med-PC®.
     It was designed to be compatible with Med-PC® IV but given how
-    little Med PC changes, it should be compatible with Med-PC® V.
-    It was written by Shaun Khoo (ORCID: 0000-0002-0972-3788).
+    little Med-PC® changes, it should be compatible with Med-PC® V.
+    It was written by Shaun Khoo using Python 3.4.4 with the xlrd
+    and xlsxwriter packages. Executable files were produced using py2exe.
+    
     It is free open source software available under an MIT license.
     You pay nothing and you can do with it as you please.
     The MIT license allows you to sell GEToperant but I have no
     idea how you can make money given that it is available for free.
 
-    If you have enjoyed using GEToperant, please reference it
-    in one of your publications. You can refer to the url or cite
-    one of my papers.
+    If you have enjoyed using GEToperant, please tell your friends or
+    reference it in one of your publications.
 
-    For more information check it out on Github:
-    www.github.com/Skhoo
+    For the latest version and source code visit:
+    https://github.com/SKhoo/GEToperant/
     For up to date contact information visit:
     https://orcid.org/0000-0002-0972-3788
     """
@@ -146,10 +167,10 @@ def aboutGET():
 
 def licenseMIT():
     licenseme = Toplevel()
-    licenseme.title('About GEToperant')
-    MIT = Text(licenseme, height = 31, width = 75)
+    licenseme.title('GEToperant MIT License')
+    MIT = Text(licenseme, height = 31, width = 60)
     MIT.pack(side= 'top')
-    MIT.tag_configure('regular', font=('Verdana', 12))
+    MIT.tag_configure('regular', font=('Arial', 11))
     MITtext = """
     MIT License
 
@@ -186,14 +207,40 @@ def quit():
 root = Tk()
 
 ##Set window size
-root.geometry('876x420')
-root.title('GEToperant v0.9a >(\' . \')<')
+root.geometry('876x500')
+root.title('GEToperant v0.91a >(\' . \')<')
 Montre = PhotoImage(file='icon.pnm')
 root.wm_iconphoto('True', Montre)
 
 #Display header logo
 Kip = PhotoImage(file='logo.pnm')
-displaylogo = Label(root, image = Kip).pack(side = 'top')
+displaylogo = Label(root, image = Kip).grid(row = 0)
+
+##Checkbox options
+Label(root, text = 'Select headers to export:', font=('Verdana', 11)).grid(row = 1)
+Cboxes1 = Frame(height = 80, width = 876)
+Cboxes1.grid(row = 2)
+Header_Filename = IntVar(value = 1)
+Checkbutton(Cboxes1, text= 'Filename', variable = Header_Filename, font=('Verdana', 9)).grid(row = 0, column = 0, sticky = W, padx = 15)
+Header_StartDate = IntVar(value = 1)
+Checkbutton(Cboxes1, text= 'Start Date', variable = Header_StartDate, font=('Verdana', 9)).grid(row = 0, column = 1, sticky = W, padx = 15)
+Header_EndDate = IntVar(value = 1)
+Checkbutton(Cboxes1, text = 'End Date', variable = Header_EndDate, font=('Verdana', 9)).grid(row = 0, column = 2, sticky = W, padx = 15)
+Header_Subject = IntVar(value = 1)
+Checkbutton(Cboxes1, text = 'Subject', variable = Header_Subject, font=('Verdana', 9)).grid(row = 0, column = 3, sticky = W, padx = 15)
+Header_Experiment = IntVar(value = 1)
+Checkbutton(Cboxes1, text = 'Experiment', variable = Header_Experiment, font=('Verdana', 9)).grid(row = 0, column = 4, sticky = W, padx = 15)
+Header_Group = IntVar(value = 1)
+Checkbutton(Cboxes1, text = 'Group', variable = Header_Group, font=('Verdana', 9)).grid(row = 1, column = 0, sticky = W, padx = 15)
+Header_Box = IntVar(value = 1)
+Checkbutton(Cboxes1, text = 'Box', variable = Header_Box, font=('Verdana', 9)).grid(row = 1, column = 1, sticky = W, padx = 15)
+Header_StartTime = IntVar(value = 1)
+Checkbutton(Cboxes1, text = 'Start Time', variable = Header_StartTime, font=('Verdana', 9)).grid(row = 1, column = 2, sticky = W, padx = 15)
+Header_EndTime = IntVar(value = 1)
+Checkbutton(Cboxes1, text = 'End Time', variable = Header_EndTime, font=('Verdana', 9)).grid(row = 1, column = 3, sticky = W, padx = 15)
+Header_MSN = IntVar(value = 1)
+Checkbutton(Cboxes1, text = 'MSN (Program Name)', variable = Header_MSN, font=('Verdana', 9)).grid(row = 1, column = 4, sticky = W, padx = 15)
+
 
 ## Menus
 menu = Menu(root)
@@ -215,18 +262,18 @@ helpmenu.add_command(label = 'License', command = licenseMIT)
 ## Buttons
 class App:
     def __init__(self, master):
-        frame = Frame(master)
-        frame.pack()
-        self.express = Button(frame, text = 'GEToperant Express', command = GETexpress)
-        self.express.pack(padx = 10, pady = 50, side=LEFT)
-        self.profile = Button(frame, text = 'Select Profile', command = openprofile)
-        self.profile.pack(padx = 10, pady = 50, side=LEFT)
-        self.MPCdatafiles = Button(frame, text = 'Select Med-PC data file(s)', command = opendata)
-        self.MPCdatafiles.pack(padx = 10, pady = 50, side=LEFT)
-        self.execall = Button(frame, text = 'Select save file data', command = saveoutput)
-        self.execall.pack(padx = 10, pady = 50, side=LEFT)
-        self.exit = Button(frame, text = 'Quit', command = quit)
-        self.exit.pack(padx = 10, pady = 50, side=LEFT)
+        frame = Frame(height = 80, width = 876)
+        frame.grid(row = 3, pady = 25)
+        self.express = Button(frame, text = 'GEToperant Express', command = GETexpress, font=('Verdana', 9))
+        self.express.grid(row = 0, column = 0, padx = 15)
+        self.profile = Button(frame, text = 'Select Profile', command = openprofile, font=('Verdana', 9))
+        self.profile.grid(row = 0, column = 1, padx = 15)
+        self.MPCdatafiles = Button(frame, text = 'Select Med-PC data file(s)', command = opendata, font=('Verdana', 9))
+        self.MPCdatafiles.grid(row = 0, column = 2, padx = 15)
+        self.execall = Button(frame, text = 'Select save file data', command = saveoutput, font=('Verdana', 9))
+        self.execall.grid(row = 0, column = 3, padx = 15)
+        self.exit = Button(frame, text = 'Quit', command = quit, font=('Verdana', 9))
+        self.exit.grid(row = 1, column = 3, sticky = E, padx = 15, pady = 30)
 
 app = App(root)
 root.mainloop()

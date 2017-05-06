@@ -8,7 +8,7 @@ import xlsxwriter
 import re
 import itertools
 
-def GEToperant(GETprofile, MPCdatafiles, outputfile):
+def GEToperant(GETprofile, MPCdatafiles, outputfile, exportfilename, exportstartdate, exportenddate, exportsubject, exportexperiment, exportgroup, exportbox, exportstarttime, exportendtime, exportmsn):
     '''
     GEToperant takes three arguments:
     GETprofile, which must be an Excel file
@@ -204,47 +204,68 @@ def GEToperant(GETprofile, MPCdatafiles, outputfile):
 
     ### Write the headers
     mainsheet.set_column('A:A', 15)
-    mainsheet.write(0, 0, 'Filename')
-    for i in range(len(Filenames)):
-        mainsheet.write(0, i+1, Filenames[i])
 
-    mainsheet.write(1, 0, 'Start Date')
-    for i in range(len(Startdate)):
-        mainsheet.write(1, i+1, Startdate[i])
+    lastrow = -1
 
-    mainsheet.write(2, 0, 'End Date')
-    for i in range(len(Enddate)):
-        mainsheet.write(2, i+1, Enddate[i])
+    if exportfilename == 1:
+        lastrow = lastrow + 1
+        mainsheet.write(lastrow, 0, 'Filename')
+        for i in range(len(Filenames)):
+            mainsheet.write(lastrow, i+1, Filenames[i])
 
-    mainsheet.write(3, 0, 'Subject')
-    for i in range(len(Subject)):
-        mainsheet.write(3, i+1, Subject[i])
+    if exportstartdate == 1:
+        lastrow = lastrow + 1
+        mainsheet.write(lastrow, 0, 'Start Date')
+        for i in range(len(Startdate)):
+            mainsheet.write(lastrow, i+1, Startdate[i])
 
-    mainsheet.write(4, 0, 'Experiment')
-    for i in range(len(Subject)):
-        mainsheet.write(4, i+1, Experiment[i])
+    if exportenddate == 1:
+        lastrow = lastrow + 1
+        mainsheet.write(lastrow, 0, 'End Date')
+        for i in range(len(Enddate)):
+            mainsheet.write(lastrow, i+1, Enddate[i])
 
-    mainsheet.write(5, 0, 'Group')
-    for i in range(len(Group)):
-        mainsheet.write(5, i+1, Group[i])
+    if exportsubject == 1:
+        lastrow = lastrow + 1
+        mainsheet.write(lastrow, 0, 'Subject')
+        for i in range(len(Subject)):
+            mainsheet.write(lastrow, i+1, Subject[i])
 
-    mainsheet.write(6, 0, 'Box')
-    for i in range(len(Box)):
-        mainsheet.write(6, i+1, float(Box[i]))
+    if exportexperiment == 1:
+        lastrow = lastrow + 1
+        mainsheet.write(lastrow, 0, 'Experiment')
+        for i in range(len(Subject)):
+            mainsheet.write(lastrow, i+1, Experiment[i])
 
-    mainsheet.write(7, 0, 'Start Time')
-    for i in range(len(Starttime)):
-        mainsheet.write(7, i+1, Starttime[i])
+    if exportgroup == 1:
+        lastrow = lastrow + 1
+        mainsheet.write(lastrow, 0, 'Group')
+        for i in range(len(Group)):
+            mainsheet.write(lastrow, i+1, Group[i])
 
-    mainsheet.write(8, 0, 'End Time')
-    for i in range(len(Endtime)):
-        mainsheet.write(8, i+1, Endtime[i])
+    if exportbox == 1:
+        lastrow = lastrow + 1
+        mainsheet.write(lastrow, 0, 'Box')
+        for i in range(len(Box)):
+            mainsheet.write(lastrow, i+1, float(Box[i]))
 
-    mainsheet.write(9, 0, 'MSN')
-    for i in range(len(MSN)):
-        mainsheet.write(9, i+1, MSN[i])
+    if exportstarttime == 1:
+        lastrow = lastrow + 1
+        mainsheet.write(lastrow, 0, 'Start Time')
+        for i in range(len(Starttime)):
+            mainsheet.write(lastrow, i+1, Starttime[i])
 
-    lastrow = 9
+    if exportendtime == 1:
+        lastrow = lastrow + 1
+        mainsheet.write(lastrow, 0, 'End Time')
+        for i in range(len(Endtime)):
+            mainsheet.write(lastrow, i+1, Endtime[i])
+
+    if exportmsn == 1:
+        lastrow = lastrow + 1
+        mainsheet.write(lastrow, 0, 'MSN')
+        for i in range(len(MSN)):
+            mainsheet.write(lastrow, i+1, MSN[i])
 
     for i in range(len(Label)):
         ### This function will loop over the profile. For each label it will check if it is
