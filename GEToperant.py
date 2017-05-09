@@ -8,7 +8,17 @@ import xlsxwriter
 import re
 import itertools
 
-def GEToperant(GETprofile, MPCdatafiles, outputfile, exportfilename, exportstartdate, exportenddate, exportsubject, exportexperiment, exportgroup, exportbox, exportstarttime, exportendtime, exportmsn):
+def GEToperant(GETprofile, MPCdatafiles, outputfile,
+               exportfilename = 1,
+               exportstartdate = 1,
+               exportenddate = 1,
+               exportsubject = 1,
+               exportexperiment = 1,
+               exportgroup = 1,
+               exportbox = 1,
+               exportstarttime = 1,
+               exportendtime = 1,
+               exportmsn = 1):
     '''
     GEToperant takes three arguments:
     GETprofile, which must be an Excel file
@@ -25,11 +35,8 @@ def GEToperant(GETprofile, MPCdatafiles, outputfile, exportfilename, exportstart
     The profile must be designed according to the instructions in the GUI.
     '''
 
-    ### This first part will read the data profile and develop a series of lists
-    profile_xl = xlrd.open_workbook(GETprofile)
-    profile_xl_sheets = profile_xl.sheet_names()
-    profilesheet = profile_xl.sheet_by_name(profile_xl_sheets[0])
 
+        ### This first part will read the data profile and develop a series of lists
     Label = list()
     LabelStartValue = list()
     LabelIncrement = list()
@@ -38,39 +45,67 @@ def GEToperant(GETprofile, MPCdatafiles, outputfile, exportfilename, exportstart
     ArrayIncrement = list()
     StopElement = list()
 
-    for r in range(1,max(range(profilesheet.nrows))):
-        cell0 = profilesheet.cell(r,0)
-        Label.append(str(cell0).split("\'")[1])
-        
-        cell1 = profilesheet.cell(r,1)
-        if 'empty' in str(cell1):
-            LabelStartValue.append(None)
-        elif 'number' in str(cell1):
-            LabelStartValue.append(int(float(str(cell1).split(":")[1])))
+    if 'xlsx' in GETprofile[-4:].lower():
+        ### Import an Excel-based GEToperant profile
+        profile_xl = xlrd.open_workbook(GETprofile)
+        profile_xl_sheets = profile_xl.sheet_names()
+        profilesheet = profile_xl.sheet_by_name(profile_xl_sheets[0])
 
-        cell2 = profilesheet.cell(r,2)
-        if 'empty' in str(cell2):
-            LabelIncrement.append(None)
-        elif 'number' in str(cell2):
-            LabelIncrement.append(int(float(str(cell2).split(":")[1])))
+        for r in range(1,max(range(profilesheet.nrows))):
+            cell0 = profilesheet.cell(r,0)
+            Label.append(str(cell0).split("\'")[1])
+            
+            cell1 = profilesheet.cell(r,1)
+            if 'empty' in str(cell1):
+                LabelStartValue.append(None)
+            elif 'number' in str(cell1):
+                LabelStartValue.append(int(float(str(cell1).split(":")[1])))
 
-        cell3 = profilesheet.cell(r,3)
-        ArrayVar.append(str(cell3).split("\'")[1])
+            cell2 = profilesheet.cell(r,2)
+            if 'empty' in str(cell2):
+                LabelIncrement.append(None)
+            elif 'number' in str(cell2):
+                LabelIncrement.append(int(float(str(cell2).split(":")[1])))
 
-        cell4 = profilesheet.cell(r,4)
-        StartElement.append(int(float(str(cell4).split(":")[1])))
+            cell3 = profilesheet.cell(r,3)
+            ArrayVar.append(str(cell3).split("\'")[1])
 
-        cell5 = profilesheet.cell(r,5)
-        if 'empty' in str(cell5):
-            ArrayIncrement.append(None)
-        elif 'number' in str(cell5):
-            ArrayIncrement.append(int(float(str(cell5).split(":")[1])))
+            cell4 = profilesheet.cell(r,4)
+            StartElement.append(int(float(str(cell4).split(":")[1])))
 
-        cell6 = profilesheet.cell(r,6)
-        if 'empty' in str(cell6) or 'text' in str(cell6):
-            StopElement.append(None)
-        elif 'number' in str(cell6):
-            StopElement.append(int(float(str(cell6).split(":")[1])))
+            cell5 = profilesheet.cell(r,5)
+            if 'empty' in str(cell5):
+                ArrayIncrement.append(None)
+            elif 'number' in str(cell5):
+                ArrayIncrement.append(int(float(str(cell5).split(":")[1])))
+
+            cell6 = profilesheet.cell(r,6)
+            if 'empty' in str(cell6) or 'text' in str(cell6):
+                StopElement.append(None)
+            elif 'number' in str(cell6):
+                StopElement.append(int(float(str(cell6).split(":")[1])))
+
+    elif 'mrp' in GETprofile[-3:].lower():
+        rowprofile = open(GETprofile, 'r').readlines()
+        for i in range(0, len(rowprofile), 2):
+            ### For each label in the MRP, decide if it is a data value, if so, then import it
+            row_check = re.search(r'\D\(', rowprofile[i+1])
+            if row_check != None:
+                Label.append(rowprofile[i][:len(rowprofile[i])-1])
+                LabelStartValue.append(None)
+                LabelIncrement.append(None)
+                ArrayVar.append(rowprofile[i+1][0])
+                StartElement.append(int(rowprofile[i+1][2:-2]))
+                ArrayIncrement.append(0)
+                StopElement.append(None)
+            elif 'comment' in rowprofile[i+1].lower():
+                Label.append(rowprofile[i][:len(rowprofile[i])-1])
+                LabelStartValue.append(None)
+                LabelIncrement.append(None)
+                ArrayVar.append('Comments')
+                StartElement.append(0)
+                ArrayIncrement.append(0)
+                StopElement.append(None)
 
     ### The relevant fields in the Med-PC file are then defined as a series of lists
     Filenames = list()
@@ -284,7 +319,10 @@ def GEToperant(GETprofile, MPCdatafiles, outputfile, exportfilename, exportstart
                         mainsheet.write(lastrow, k+1, None)
             else:
                 for k in range(len(Subject)):
-                    mainsheet.write(lastrow, k+1, float(eval(ArrayVar[i])[k][StartElement[i]]))
+                    if len(eval(ArrayVar[i])) > 0 and StartElement[i] < len(eval(ArrayVar[i])[k]):
+                        mainsheet.write(lastrow, k+1, float(eval(ArrayVar[i])[k][StartElement[i]]))
+                    else:
+                        mainsheet.write(lastrow, k+1, None)
         elif ArrayIncrement[i] > 0:
             if StopElement[i] == None or isinstance(StopElement[i], str):
                 steps = range(StartElement[i], len(max(eval(ArrayVar[i]), key = len)), ArrayIncrement[i])
@@ -301,3 +339,73 @@ def GEToperant(GETprofile, MPCdatafiles, outputfile, exportfilename, exportstart
                         mainsheet.write(lastrow, k+1, float(eval(ArrayVar[i])[k][x]))
                     else:
                         mainsheet.write(lastrow, k+1, None)
+
+    output.close()
+
+def convertMRP(GETprofile, profileexport):
+    rowprofile = open(GETprofile, 'r').readlines()
+
+    Label = list()
+    LabelStartValue = list()
+    LabelIncrement = list()
+    ArrayVar = list()
+    StartElement = list()
+    ArrayIncrement = list()
+    StopElement = list()
+
+    for i in range(0, len(rowprofile), 2):
+        ### For each label in the MRP, decide if it is a data value, if so, then import it
+        row_check = re.search(r'\D\(', rowprofile[i+1])
+        if row_check != None:
+            Label.append(rowprofile[i][:len(rowprofile[i])-1])
+            LabelStartValue.append(None)
+            LabelIncrement.append(None)
+            ArrayVar.append(rowprofile[i+1][0])
+            StartElement.append(int(rowprofile[i+1][2:-2]))
+            ArrayIncrement.append(0)
+            StopElement.append(None)
+        elif 'comment' in rowprofile[i+1].lower():
+            Label.append(rowprofile[i][:len(rowprofile[i])-1])
+            LabelStartValue.append(None)
+            LabelIncrement.append(None)
+            ArrayVar.append('Comments')
+            StartElement.append(0)
+            ArrayIncrement.append(0)
+            StopElement.append(None)
+
+    output = xlsxwriter.Workbook(profileexport)
+    output.set_properties({
+                    'title': 'GEToperant Profile',
+                    'subject': 'Animal behaviour',
+                    'comments': 'MPC2XL Row Profile converted for use with GEToperant. https://github.com/SKhoo/GEToperant'
+                    })
+
+    mainsheet = output.add_worksheet('GEToperant Profile')
+    mainsheet.set_column('A:A', 25)
+    mainsheet.set_column('B:G', 15)
+
+    mainsheet.write(0, 0, 'Label')
+    mainsheet.write(0, 1, 'Label Start Value')
+    mainsheet.write(0, 2, 'Label Increment')
+    mainsheet.write(0, 3, 'Array/Variable')
+    mainsheet.write(0, 4, 'Start Element')
+    mainsheet.write(0, 5, 'Increment Element')
+    mainsheet.write(0, 6, 'Stop Element')
+    mainsheet.write(0, 7, 'Converted file: ' + GETprofile)
+    mainsheet.write(1, 7, 'Label tells the program what the name the data point')
+    mainsheet.write(2, 7, 'Array/Variable tells the program where to look for the data')
+    mainsheet.write(3, 7, 'Start Element tells the program which element to extract for that label')
+    mainsheet.write(4, 7, 'Increment Element tells the program if more elements need to be extracted from an array, and if so, whether to collect every element, or every nth element.')
+    mainsheet.write(5, 7, 'Stop Element tells the program when to stop extracting elements from an array. It is not needed if only collecting 1 element')
+    mainsheet.write(6, 7, 'Label Start Value and Label Increment can be used to increment a label that is used for multiple elements')
+
+    for i in range(len(Label)):
+        mainsheet.write(i+1, 0, Label[i])
+        mainsheet.write(i+1, 1, LabelStartValue[i])
+        mainsheet.write(i+1, 2, LabelIncrement[i])
+        mainsheet.write(i+1, 3, ArrayVar[i])
+        mainsheet.write(i+1, 4, StartElement[i])
+        mainsheet.write(i+1, 5, ArrayIncrement[i])
+        mainsheet.write(i+1, 6, StopElement[i])
+
+    output.close()

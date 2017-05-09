@@ -11,14 +11,14 @@ MPC_filenames = None
 #Define functions for the menus
 def openprofile():
     global GETprofile
-    GETprofile = askopenfilename(title = 'Select data profile', filetypes =  [('Excel', '*.xlsx')])
+    GETprofile = askopenfilename(title = 'Select data profile', filetypes =  [('Excel', '*.xlsx'), ('MPC2XL Row Profile', '*.MRP')])
 def opendata():
     global MPC_filenames
     MPC_filenames = askopenfilenames(title = 'Select files to import')
 def saveoutput():
     outputfile = asksaveasfilename(title = 'Save output file as', defaultextension='.xlsx', filetypes=(('Excel', '*.xlsx'),('All Files', '*.*')))
-    if GETprofile == None or MPC_filenames == None:
-        showerror('Error! Profile or data file selection.', 'Please select a data profile and Med-PC data files first.')
+    if GETprofile == None or MPC_filenames == None or outputfile == None:
+        showerror('Error! Profile or data file selection.', 'Please select a data profile and at least one Med-PC data file first.')
     else:
         GEToperant.GEToperant(GETprofile, MPC_filenames, outputfile,
                               exportfilename = Header_Filename.get(),
@@ -31,22 +31,26 @@ def saveoutput():
                               exportstarttime = Header_StartTime.get(),
                               exportendtime = Header_EndTime.get(),
                               exportmsn = Header_MSN.get())
+def convertprofile():
+    GETprofile = askopenfilename(title = 'Select data profile', filetypes =  [('MPC2XL Row Profile', '*.MRP')])
+    profileexport = asksaveasfilename(title = 'Save converted profile as', defaultextension='.xlsx', filetypes=[('Excel', '*.xlsx')])
+    GEToperant.convertMRP(GETprofile = GETprofile, profileexport = profileexport)
 
 def GETexpress():
-    GETprofile = askopenfilename(title = 'Select data profile', filetypes =  [('Excel', '*.xlsx')])
+    GETprofile = askopenfilename(title = 'Select data profile', filetypes =  [('Excel', '*.xlsx'), ('MPC2XL Row Profile', '*.MRP')])
     MPC_filenames = askopenfilenames(title = 'Select files to import')
     outputfile = asksaveasfilename(title = 'Save output file as', defaultextension='.xlsx', filetypes=(('Excel', '*.xlsx'),('All Files', '*.*')))
     GEToperant.GEToperant(GETprofile, MPC_filenames, outputfile,
-                              exportfilename = Header_Filename.get(),
-                              exportstartdate = Header_StartDate.get(),
-                              exportenddate = Header_EndDate.get(),
-                              exportsubject = Header_Subject.get(),
-                              exportexperiment = Header_Experiment.get(),
-                              exportgroup = Header_Group.get(),
-                              exportbox = Header_Box.get(),
-                              exportstarttime = Header_StartTime.get(),
-                              exportendtime = Header_EndTime.get(),
-                              exportmsn = Header_MSN.get())
+                                  exportfilename = Header_Filename.get(),
+                                  exportstartdate = Header_StartDate.get(),
+                                  exportenddate = Header_EndDate.get(),
+                                  exportsubject = Header_Subject.get(),
+                                  exportexperiment = Header_Experiment.get(),
+                                  exportgroup = Header_Group.get(),
+                                  exportbox = Header_Box.get(),
+                                  exportstarttime = Header_StartTime.get(),
+                                  exportendtime = Header_EndTime.get(),
+                                  exportmsn = Header_MSN.get())
 def helpme():
     helpwindow = Toplevel()
     helpwindow.title('How to use GEToperant')
@@ -69,6 +73,9 @@ def helpme():
     - a single element
     - a section of an array
     - a whole array
+
+    You can also use MPC2XL Row Profiles (MRPs) to extract your data
+    or convert an MRP to an GEToperant profile.
 
     Your data profile needs to have up to 7 pieces of information:
     1. A Label
@@ -208,7 +215,7 @@ root = Tk()
 
 ##Set window size
 root.geometry('876x500')
-root.title('GEToperant v0.91a >(\' . \')<')
+root.title('GEToperant v0.92a >(\' . \')<')
 Montre = PhotoImage(file='icon.pnm')
 root.wm_iconphoto('True', Montre)
 
@@ -251,6 +258,8 @@ filemenu.add_command(label = 'Select Profile', command = openprofile)
 filemenu.add_command(label = 'Open Data File(s)', command = opendata)
 filemenu.add_command(label = 'Save Output As', command = saveoutput)
 filemenu.add_separator()
+filemenu.add_command(label = 'Convert MPC2XL Row Profile', command = convertprofile)
+filemenu.add_separator()
 filemenu.add_command(label = 'Close', command = root.quit)
                                  
 helpmenu = Menu(menu)
@@ -263,17 +272,23 @@ helpmenu.add_command(label = 'License', command = licenseMIT)
 class App:
     def __init__(self, master):
         frame = Frame(height = 80, width = 876)
-        frame.grid(row = 3, pady = 25)
-        self.express = Button(frame, text = 'GEToperant Express', command = GETexpress, font=('Verdana', 9))
-        self.express.grid(row = 0, column = 0, padx = 15)
-        self.profile = Button(frame, text = 'Select Profile', command = openprofile, font=('Verdana', 9))
-        self.profile.grid(row = 0, column = 1, padx = 15)
-        self.MPCdatafiles = Button(frame, text = 'Select Med-PC data file(s)', command = opendata, font=('Verdana', 9))
-        self.MPCdatafiles.grid(row = 0, column = 2, padx = 15)
-        self.execall = Button(frame, text = 'Select save file data', command = saveoutput, font=('Verdana', 9))
-        self.execall.grid(row = 0, column = 3, padx = 15)
+        frame.grid(row = 3, pady = 15)
+        Label(frame, text = 'One-Button Export', font=('Verdana', 10)).grid(row = 0, column = 0)
+        Label(frame, text = 'Step by Step Export', font=('Verdana', 10)).grid(row = 0, column = 2)
+        self.express = Button(frame, text = 'Extract Data', command = GETexpress, font=('Verdana', 9))
+        self.express.grid(row = 1, column = 0, padx = 15)
+
+        self.profile = Button(frame, text = '1. Select Profile', command = openprofile, font=('Verdana', 9))
+        self.profile.grid(row = 1, column = 1, padx = 15)
+        self.MPCdatafiles = Button(frame, text = '2. Select Med-PC data file(s)', command = opendata, font=('Verdana', 9))
+        self.MPCdatafiles.grid(row = 1, column = 2, padx = 15)
+        self.execall = Button(frame, text = '3. Select save file data', command = saveoutput, font=('Verdana', 9))
+        self.execall.grid(row = 1, column = 3, padx = 15)
+
+        self.convert = Button(frame, text = 'Convert MRP', command = convertprofile, font=('Verdana', 9))
+        self.convert.grid(row = 2, column = 0, padx = 20)
         self.exit = Button(frame, text = 'Quit', command = quit, font=('Verdana', 9))
-        self.exit.grid(row = 1, column = 3, sticky = E, padx = 15, pady = 30)
+        self.exit.grid(row = 2, column = 4, sticky = E, padx = 20, pady = 20)
 
 app = App(root)
 root.mainloop()
