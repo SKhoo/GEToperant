@@ -37,53 +37,53 @@ def GEToperant(GETprofile, MPCdatafiles, outputfile,
 
 
         ### This first part will read the data profile and develop a series of lists
-    Label = list()
-    LabelStartValue = list()
-    LabelIncrement = list()
-    ArrayVar = list()
-    StartElement = list()
-    ArrayIncrement = list()
-    StopElement = list()
+Label = list()
+LabelStartValue = list()
+LabelIncrement = list()
+ArrayVar = list()
+StartElement = list()
+ArrayIncrement = list()
+StopElement = list()
 
-    if 'xlsx' in GETprofile[-4:].lower():
-        ### Import an Excel-based GEToperant profile
-        profile_xl = xlrd.open_workbook(GETprofile)
-        profile_xl_sheets = profile_xl.sheet_names()
-        profilesheet = profile_xl.sheet_by_name(profile_xl_sheets[0])
+if 'xlsx' in GETprofile[-4:].lower():
+    ### Import an Excel-based GEToperant profile
+    profile_xl = xlrd.open_workbook(GETprofile)
+    profile_xl_sheets = profile_xl.sheet_names()
+    profilesheet = profile_xl.sheet_by_name(profile_xl_sheets[0])
 
-        for r in range(1,max(range(profilesheet.nrows))):
-            cell0 = profilesheet.cell(r,0)
-            Label.append(str(cell0).split("\'")[1])
-            
-            cell1 = profilesheet.cell(r,1)
-            if 'empty' in str(cell1):
-                LabelStartValue.append(None)
-            elif 'number' in str(cell1):
-                LabelStartValue.append(int(float(str(cell1).split(":")[1])))
+for r in range(1,max(range(profilesheet.nrows))+1):
+    cell0 = profilesheet.cell(r,0)
+    Label.append(str(cell0).split("\'")[1])
+    
+    cell1 = profilesheet.cell(r,1)
+    if 'empty' in str(cell1):
+        LabelStartValue.append(None)
+    elif 'number' in str(cell1):
+        LabelStartValue.append(int(float(str(cell1).split(":")[1])))
 
-            cell2 = profilesheet.cell(r,2)
-            if 'empty' in str(cell2):
-                LabelIncrement.append(None)
-            elif 'number' in str(cell2):
-                LabelIncrement.append(int(float(str(cell2).split(":")[1])))
+    cell2 = profilesheet.cell(r,2)
+    if 'empty' in str(cell2):
+        LabelIncrement.append(None)
+    elif 'number' in str(cell2):
+        LabelIncrement.append(int(float(str(cell2).split(":")[1])))
 
-            cell3 = profilesheet.cell(r,3)
-            ArrayVar.append(str(cell3).split("\'")[1])
+    cell3 = profilesheet.cell(r,3)
+    ArrayVar.append(str(cell3).split("\'")[1])
 
-            cell4 = profilesheet.cell(r,4)
-            StartElement.append(int(float(str(cell4).split(":")[1])))
+    cell4 = profilesheet.cell(r,4)
+    StartElement.append(int(float(str(cell4).split(":")[1])))
 
-            cell5 = profilesheet.cell(r,5)
-            if 'empty' in str(cell5):
-                ArrayIncrement.append(None)
-            elif 'number' in str(cell5):
-                ArrayIncrement.append(int(float(str(cell5).split(":")[1])))
+    cell5 = profilesheet.cell(r,5)
+    if 'empty' in str(cell5):
+        ArrayIncrement.append(None)
+    elif 'number' in str(cell5):
+        ArrayIncrement.append(int(float(str(cell5).split(":")[1])))
 
-            cell6 = profilesheet.cell(r,6)
-            if 'empty' in str(cell6) or 'text' in str(cell6):
-                StopElement.append(None)
-            elif 'number' in str(cell6):
-                StopElement.append(int(float(str(cell6).split(":")[1])))
+    cell6 = profilesheet.cell(r,6)
+    if 'empty' in str(cell6) or 'text' in str(cell6):
+        StopElement.append(None)
+    elif 'number' in str(cell6):
+        StopElement.append(int(float(str(cell6).split(":")[1])))
 
     elif 'mrp' in GETprofile[-3:].lower():
         rowprofile = open(GETprofile, 'r').readlines()
