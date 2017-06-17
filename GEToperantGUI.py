@@ -11,14 +11,16 @@ MPC_filenames = None
 #Define functions for the menus
 def openprofile():
     global GETprofile
-    GETprofile = askopenfilename(title = 'Select data profile', filetypes =  [('Excel', '*.xlsx'), ('MPC2XL Row Profile', '*.MRP')])
+    GETprofile = askopenfilename(title = 'Select data profile', filetypes =  [('Excel GEToperant Profile', '*.xlsx'), ('MPC2XL Row Profile', '*.MRP')])
+
 def opendata():
     global MPC_filenames
     MPC_filenames = askopenfilenames(title = 'Select files to import')
+
 def saveoutput():
     outputfile = asksaveasfilename(title = 'Save output file as', defaultextension='.xlsx', filetypes=(('Excel', '*.xlsx'),('All Files', '*.*')))
-    if GETprofile == None or MPC_filenames == None or outputfile == None:
-        showerror('Error! Profile or data file selection.', 'Please select a data profile and at least one Med-PC data file first.')
+    if GETprofile == None or MPC_filenames == None or len(GETprofile) < 1 or len(MPC_filenames) < 1 or len(outputfile) < 1:
+        showerror('Error!', 'Please select a data profile, at least one Med-PC data file and a define a save file.')
     else:
         GEToperant.GEToperant(GETprofile, MPC_filenames, outputfile,
                               exportfilename = Header_Filename.get(),
@@ -30,27 +32,114 @@ def saveoutput():
                               exportbox = Header_Box.get(),
                               exportstarttime = Header_StartTime.get(),
                               exportendtime = Header_EndTime.get(),
-                              exportmsn = Header_MSN.get())
+                              exportmsn = Header_MSN.get(),
+                              mode = 'Main')
+
+def saveoutputsheet():
+    outputfile = asksaveasfilename(title = 'Save output file as', defaultextension='.xlsx', filetypes=(('Excel', '*.xlsx'),('All Files', '*.*')))
+    if GETprofile == None or MPC_filenames == None or len(GETprofile) < 1 or len(MPC_filenames) < 1 or len(outputfile) < 1:
+        showerror('Error!', 'Please select a data profile, at least one Med-PC data file and a define a save file.')
+    else:
+        GEToperant.GEToperant(GETprofile, MPC_filenames, outputfile,
+                              exportfilename = Header_Filename.get(),
+                              exportstartdate = Header_StartDate.get(),
+                              exportenddate = Header_EndDate.get(),
+                              exportsubject = Header_Subject.get(),
+                              exportexperiment = Header_Experiment.get(),
+                              exportgroup = Header_Group.get(),
+                              exportbox = Header_Box.get(),
+                              exportstarttime = Header_StartTime.get(),
+                              exportendtime = Header_EndTime.get(),
+                              exportmsn = Header_MSN.get(),
+                              mode = 'Sheets')
+
+def saveoutputbooks():
+    outputfile = askdirectory(title = 'Select directory to save exported files to')
+    if GETprofile == None or MPC_filenames == None or len(GETprofile) < 1 or len(MPC_filenames) < 1 or len(outputfile) < 1:
+        showerror('Error!', 'Please select a data profile, at least one Med-PC data file and a define a save file.')
+    else:
+        GEToperant.GEToperant(GETprofile, MPC_filenames, outputfile,
+                              exportfilename = Header_Filename.get(),
+                              exportstartdate = Header_StartDate.get(),
+                              exportenddate = Header_EndDate.get(),
+                              exportsubject = Header_Subject.get(),
+                              exportexperiment = Header_Experiment.get(),
+                              exportgroup = Header_Group.get(),
+                              exportbox = Header_Box.get(),
+                              exportstarttime = Header_StartTime.get(),
+                              exportendtime = Header_EndTime.get(),
+                              exportmsn = Header_MSN.get(),
+                              mode = 'Books')
+
+#Define functions for the buttons
 def convertprofile():
     GETprofile = askopenfilename(title = 'Select data profile', filetypes =  [('MPC2XL Row Profile', '*.MRP')])
     profileexport = asksaveasfilename(title = 'Save converted profile as', defaultextension='.xlsx', filetypes=[('Excel', '*.xlsx')])
-    GEToperant.convertMRP(GETprofile = GETprofile, profileexport = profileexport)
+    if len(GETprofile) < 1 or len(profileexport) < 1:
+        showerror('Error!', 'Please select a MPC2XL Row Profile to convert and define a save file.')
+    else:
+        GEToperant.convertMRP(GETprofile = GETprofile, profileexport = profileexport)
 
 def GETexpress():
-    GETprofile = askopenfilename(title = 'Select data profile', filetypes =  [('Excel', '*.xlsx'), ('MPC2XL Row Profile', '*.MRP')])
+    GETprofile = askopenfilename(title = 'Select data profile', filetypes =  [('Excel GEToperant Profile', '*.xlsx'), ('MPC2XL Row Profile', '*.MRP')])
     MPC_filenames = askopenfilenames(title = 'Select files to import')
     outputfile = asksaveasfilename(title = 'Save output file as', defaultextension='.xlsx', filetypes=(('Excel', '*.xlsx'),('All Files', '*.*')))
-    GEToperant.GEToperant(GETprofile, MPC_filenames, outputfile,
-                                  exportfilename = Header_Filename.get(),
-                                  exportstartdate = Header_StartDate.get(),
-                                  exportenddate = Header_EndDate.get(),
-                                  exportsubject = Header_Subject.get(),
-                                  exportexperiment = Header_Experiment.get(),
-                                  exportgroup = Header_Group.get(),
-                                  exportbox = Header_Box.get(),
-                                  exportstarttime = Header_StartTime.get(),
-                                  exportendtime = Header_EndTime.get(),
-                                  exportmsn = Header_MSN.get())
+    if len(GETprofile) < 1 or len(MPC_filenames) < 1 or len(outputfile) < 1:
+        showerror('Error!', 'Please select a data profile, at least one Med-PC data file first and an output file when prompted.')
+    else:
+        GEToperant.GEToperant(GETprofile, MPC_filenames, outputfile,
+                                      exportfilename = Header_Filename.get(),
+                                      exportstartdate = Header_StartDate.get(),
+                                      exportenddate = Header_EndDate.get(),
+                                      exportsubject = Header_Subject.get(),
+                                      exportexperiment = Header_Experiment.get(),
+                                      exportgroup = Header_Group.get(),
+                                      exportbox = Header_Box.get(),
+                                      exportstarttime = Header_StartTime.get(),
+                                      exportendtime = Header_EndTime.get(),
+                                      exportmsn = Header_MSN.get(),
+                                      mode = 'Main')
+
+def GETsheets():
+    GETprofile = askopenfilename(title = 'Select data profile', filetypes =  [('Excel GEToperant Profile', '*.xlsx'), ('MPC2XL Row Profile', '*.MRP')])
+    MPC_filenames = askopenfilenames(title = 'Select files to import')
+    outputfile = asksaveasfilename(title = 'Save output file as', defaultextension='.xlsx', filetypes=(('Excel', '*.xlsx'),('All Files', '*.*')))
+    if len(GETprofile) < 1 or len(MPC_filenames) < 1 or len(outputfile) < 1:
+        showerror('Error!', 'Please select a data profile, at least one Med-PC data file first and an output file when prompted.')
+    else:
+        GEToperant.GEToperant(GETprofile, MPC_filenames, outputfile,
+                                      exportfilename = Header_Filename.get(),
+                                      exportstartdate = Header_StartDate.get(),
+                                      exportenddate = Header_EndDate.get(),
+                                      exportsubject = Header_Subject.get(),
+                                      exportexperiment = Header_Experiment.get(),
+                                      exportgroup = Header_Group.get(),
+                                      exportbox = Header_Box.get(),
+                                      exportstarttime = Header_StartTime.get(),
+                                      exportendtime = Header_EndTime.get(),
+                                      exportmsn = Header_MSN.get(),
+                                      mode = 'Sheets')
+
+def GETbooks():
+    GETprofile = askopenfilename(title = 'Select data profile', filetypes =  [('Excel GEToperant Profile', '*.xlsx'), ('MPC2XL Row Profile', '*.MRP')])
+    MPC_filenames = askopenfilenames(title = 'Select files to import')
+    outputfile = askdirectory(title = 'Select directory to save exported files to')
+    if len(GETprofile) < 1 or len(MPC_filenames) < 1 or len(outputfile) < 1:
+        showerror('Error!', 'Please select a data profile, at least one Med-PC data file first and an output directory when prompted.')
+    else:
+        GEToperant.GEToperant(GETprofile, MPC_filenames, outputfile,
+                                      exportfilename = Header_Filename.get(),
+                                      exportstartdate = Header_StartDate.get(),
+                                      exportenddate = Header_EndDate.get(),
+                                      exportsubject = Header_Subject.get(),
+                                      exportexperiment = Header_Experiment.get(),
+                                      exportgroup = Header_Group.get(),
+                                      exportbox = Header_Box.get(),
+                                      exportstarttime = Header_StartTime.get(),
+                                      exportendtime = Header_EndTime.get(),
+                                      exportmsn = Header_MSN.get(),
+                                      mode = 'Books')
+    
 def helpme():
     helpwindow = Toplevel()
     helpwindow.title('How to use GEToperant')
@@ -154,7 +243,7 @@ def aboutGET():
     It was designed to be compatible with Med-PC® IV but given how
     little Med-PC® changes, it should be compatible with Med-PC® V.
     It was written by Shaun Khoo using Python 3.4.4 with the xlrd
-    and xlsxwriter packages. Executable files were produced using py2exe.
+    and xlsxwriter packages. Executable files were produced using pyinstaller.
     
     It is free open source software available under an MIT license.
     You pay nothing and you can do with it as you please.
@@ -215,7 +304,7 @@ root = Tk()
 
 ##Set window size
 root.geometry('876x500')
-root.title('GEToperant v0.92a >(\' . \')<')
+root.title('GEToperant v0.94a >(\' . \')<')
 Montre = PhotoImage(file='icon.pnm')
 root.wm_iconphoto('True', Montre)
 
@@ -256,7 +345,9 @@ filemenu = Menu(menu)
 menu.add_cascade(label = 'File', menu = filemenu)
 filemenu.add_command(label = 'Select Profile', command = openprofile)
 filemenu.add_command(label = 'Open Data File(s)', command = opendata)
-filemenu.add_command(label = 'Save Output As', command = saveoutput)
+filemenu.add_command(label = 'Save Output: One Sheet, One Workbook', command = saveoutput)
+filemenu.add_command(label = 'Save Output: Data Files on Separate Sheets', command = saveoutputsheet)
+filemenu.add_command(label = 'Save Output: Data Files in Separate Workbooks', command = saveoutputbooks)
 filemenu.add_separator()
 filemenu.add_command(label = 'Convert MPC2XL Row Profile', command = convertprofile)
 filemenu.add_separator()
@@ -273,22 +364,20 @@ class App:
     def __init__(self, master):
         frame = Frame(height = 80, width = 876)
         frame.grid(row = 3, pady = 15)
-        Label(frame, text = 'One-Button Export', font=('Verdana', 10)).grid(row = 0, column = 0)
-        Label(frame, text = 'Step by Step Export', font=('Verdana', 10)).grid(row = 0, column = 2)
-        self.express = Button(frame, text = 'Extract Data', command = GETexpress, font=('Verdana', 9))
-        self.express.grid(row = 1, column = 0, padx = 15)
+        Label(frame, text = 'Select Export Mode', font=('Verdana', 10)).grid(row = 0, column = 1)
+        self.express = Button(frame, text = '1. All Combined', command = GETexpress, font=('Verdana', 9))
+        self.express.grid(row = 1, column = 0, sticky = W, padx = 30)
 
-        self.profile = Button(frame, text = '1. Select Profile', command = openprofile, font=('Verdana', 9))
-        self.profile.grid(row = 1, column = 1, padx = 15)
-        self.MPCdatafiles = Button(frame, text = '2. Select Med-PC data file(s)', command = opendata, font=('Verdana', 9))
-        self.MPCdatafiles.grid(row = 1, column = 2, padx = 15)
-        self.execall = Button(frame, text = '3. Select save file data', command = saveoutput, font=('Verdana', 9))
-        self.execall.grid(row = 1, column = 3, padx = 15)
+        self.sheets = Button(frame, text = '2. Separate Sheets', command = GETsheets, font=('Verdana', 9))
+        self.sheets.grid(row = 1, column = 1, sticky = W, padx = 30)
+
+        self.books = Button(frame, text = '3. Separate Books', command = GETbooks, font=('Verdana', 9))
+        self.books.grid(row = 1, column = 2, sticky = W, padx = 30)
 
         self.convert = Button(frame, text = 'Convert MRP', command = convertprofile, font=('Verdana', 9))
-        self.convert.grid(row = 2, column = 0, padx = 20)
+        self.convert.grid(row = 2, column = 0, sticky = W, padx = 30)
         self.exit = Button(frame, text = 'Quit', command = quit, font=('Verdana', 9))
-        self.exit.grid(row = 2, column = 4, sticky = E, padx = 20, pady = 20)
+        self.exit.grid(row = 2, column = 2, sticky = E, padx = 30, pady = 20)
 
 app = App(root)
 root.mainloop()
