@@ -326,7 +326,7 @@ root = Tk()
 
 ##Set window size
 root.geometry('876x500')
-root.title('GEToperant v0.97a >(\' . \')<')
+root.title('GEToperant v0.98a >(\' . \')<')
 Montre = PhotoImage(file='icon.pnm')
 root.wm_iconphoto('True', Montre)
 

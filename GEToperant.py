@@ -284,7 +284,7 @@ def GEToperant(GETprofile, MPCdatafiles, outputfile,
                 # a previous data array. If there are previous data values, flatten the data array and dump them.
                 elif len(line) > 1:
                     part_check = re.search(r'\D:', line)
-                    if part_check != None:
+                    if part_check != None and line[0:1] != '\\':
                         if len(values) > 0:
                             values = list(itertools.chain.from_iterable(values))
                             eval(currentarray).append(values)
@@ -297,17 +297,17 @@ def GEToperant(GETprofile, MPCdatafiles, outputfile,
                         ### then we should set the beginning of a new array.
                         else:
                             currentarray = line[0]
-                    ### this part should then collect data into a new array
+                    ### this part checks if the line is a comment and then collects the data
+                    if line[0:1] == '\\':
+                        if len(values) > 0:
+                            values = list(itertools.chain.from_iterable(values))
+                            eval(currentarray).append(values)
+                            values = list()
+                            Comments.append(line[1:-1])
+                        else:
+                            Comments.append(line[1:-1])
                     else:
                         values.append(line.split()[1:])
-                elif line[0:1] == '\\':
-                    if len(values) > 0:
-                        values = list(itertools.chain.from_iterable(values))
-                        eval(currentarray).append(values)
-                        values = list()
-                        Comments.append(line[1:-1])
-                    else:
-                        Comments.append(line[1:-1])
                 elif line == '\n' or len(line) < 1:
                     if len(values) > 0:
                         values = list(itertools.chain.from_iterable(values))
@@ -566,7 +566,7 @@ def GEToperant(GETprofile, MPCdatafiles, outputfile,
                 # a previous data array. If there are previous data values, flatten the data array and dump them.
                 elif len(line) > 1:
                     part_check = re.search(r'\D:', line)
-                    if part_check != None:
+                    if part_check != None and line[0:1] != '\\':
                         if len(values) > 0:
                             values = list(itertools.chain.from_iterable(values))
                             eval(currentarray).append(values)
@@ -579,17 +579,17 @@ def GEToperant(GETprofile, MPCdatafiles, outputfile,
                         ### then we should set the beginning of a new array.
                         else:
                             currentarray = line[0]
-                    ### this part should then collect data into a new array
+                    ### this part checks if the line is a comment and then collects the data
+                    if line[0:1] == '\\':
+                        if len(values) > 0:
+                            values = list(itertools.chain.from_iterable(values))
+                            eval(currentarray).append(values)
+                            values = list()
+                            Comments.append(line[1:-1])
+                        else:
+                            Comments.append(line[1:-1])
                     else:
                         values.append(line.split()[1:])
-                elif line[0:1] == '\\':
-                    if len(values) > 0:
-                        values = list(itertools.chain.from_iterable(values))
-                        eval(currentarray).append(values)
-                        values = list()
-                        Comments.append(line[1:-1])
-                    else:
-                        Comments.append(line[1:-1])
                 elif line == '\n' or len(line) < 1:
                     if len(values) > 0:
                         values = list(itertools.chain.from_iterable(values))
@@ -828,7 +828,7 @@ def GEToperant(GETprofile, MPCdatafiles, outputfile,
                 # a previous data array. If there are previous data values, flatten the data array and dump them.
                 elif len(line) > 1:
                     part_check = re.search(r'\D:', line)
-                    if part_check != None:
+                    if part_check != None and line[0:1] != '\\':
                         if len(values) > 0:
                             values = list(itertools.chain.from_iterable(values))
                             eval(currentarray).append(values)
@@ -841,17 +841,17 @@ def GEToperant(GETprofile, MPCdatafiles, outputfile,
                         ### then we should set the beginning of a new array.
                         else:
                             currentarray = line[0]
-                    ### this part should then collect data into a new array
+                    ### this part checks if the line is a comment and then collects the data
+                    if line[0:1] == '\\':
+                        if len(values) > 0:
+                            values = list(itertools.chain.from_iterable(values))
+                            eval(currentarray).append(values)
+                            values = list()
+                            Comments.append(line[1:-1])
+                        else:
+                            Comments.append(line[1:-1])
                     else:
                         values.append(line.split()[1:])
-                elif line[0:1] == '\\':
-                    if len(values) > 0:
-                        values = list(itertools.chain.from_iterable(values))
-                        eval(currentarray).append(values)
-                        values = list()
-                        Comments.append(line[1:-1])
-                    else:
-                        Comments.append(line[1:-1])
                 elif line == '\n' or len(line) < 1:
                     if len(values) > 0:
                         values = list(itertools.chain.from_iterable(values))
