@@ -291,7 +291,7 @@ def GEToperant(GETprofile, MPCdatafiles, outputfile,
                             values = list()
                         ### here we should check for whether the letter has been printed as just a variable.
                         part_checkb = re.search(r'\d', line)
-                        if part_checkb != None:
+                        if part_checkb != None and line[0:1] != '\\':
                             currentarray = line[0]
                             values.append(line.split()[1])
                         ### then we should set the beginning of a new array.
@@ -300,7 +300,13 @@ def GEToperant(GETprofile, MPCdatafiles, outputfile,
                     ### this part should then collect data into a new array
                     else:
                         values.append(line.split()[1:])
-                    if re.search(r'[\\]', line) != None:
+                elif line[0:1] == '\\':
+                    if len(values) > 0:
+                        values = list(itertools.chain.from_iterable(values))
+                        eval(currentarray).append(values)
+                        values = list()
+                        Comments.append(line[1:-1])
+                    else:
                         Comments.append(line[1:-1])
                 elif line == '\n' or len(line) < 1:
                     if len(values) > 0:
@@ -433,7 +439,7 @@ def GEToperant(GETprofile, MPCdatafiles, outputfile,
                     lastrow = lastrow + 1
                     for k in range(len(Subject)):
                         if LabelIncrement[i] != None and LabelIncrement[i] > 0:
-                            mainsheet.write(lastrow, 0, Label[i] + ' ' + str(LabelStartValue[i] + x * LabelIncrement[i]))
+                            mainsheet.write(lastrow, 0, Label[i] + ' ' + str(LabelStartValue[i] + int((x-StartElement[i])/ArrayIncrement[i]) * LabelIncrement[i]))
                         else:
                             mainsheet.write(lastrow, 0, Label[i])
                         if x < len(eval(ArrayVar[i])[k]):
@@ -567,7 +573,7 @@ def GEToperant(GETprofile, MPCdatafiles, outputfile,
                             values = list()
                         ### here we should check for whether the letter has been printed as just a variable.
                         part_checkb = re.search(r'\d', line)
-                        if part_checkb != None:
+                        if part_checkb != None and line[0:1] != '\\':
                             currentarray = line[0]
                             values.append(line.split()[1])
                         ### then we should set the beginning of a new array.
@@ -576,7 +582,13 @@ def GEToperant(GETprofile, MPCdatafiles, outputfile,
                     ### this part should then collect data into a new array
                     else:
                         values.append(line.split()[1:])
-                    if re.search(r'[\\]', line) != None:
+                elif line[0:1] == '\\':
+                    if len(values) > 0:
+                        values = list(itertools.chain.from_iterable(values))
+                        eval(currentarray).append(values)
+                        values = list()
+                        Comments.append(line[1:-1])
+                    else:
                         Comments.append(line[1:-1])
                 elif line == '\n' or len(line) < 1:
                     if len(values) > 0:
@@ -703,7 +715,7 @@ def GEToperant(GETprofile, MPCdatafiles, outputfile,
                         lastrow = lastrow + 1
                         for k in range(len(Subject)):
                             if LabelIncrement[i] != None and LabelIncrement[i] > 0:
-                                mainsheet.write(lastrow, 0, Label[i] + ' ' + str(LabelStartValue[i] + x * LabelIncrement[i]))
+                                mainsheet.write(lastrow, 0, Label[i] + ' ' + str(LabelStartValue[i] + int((x-StartElement[i])/ArrayIncrement[i]) * LabelIncrement[i]))
                             else:
                                 mainsheet.write(lastrow, 0, Label[i])
                             if x < len(eval(ArrayVar[i])[k]):
@@ -823,7 +835,7 @@ def GEToperant(GETprofile, MPCdatafiles, outputfile,
                             values = list()
                         ### here we should check for whether the letter has been printed as just a variable.
                         part_checkb = re.search(r'\d', line)
-                        if part_checkb != None:
+                        if part_checkb != None and line[0:1] != '\\':
                             currentarray = line[0]
                             values.append(line.split()[1])
                         ### then we should set the beginning of a new array.
@@ -832,7 +844,13 @@ def GEToperant(GETprofile, MPCdatafiles, outputfile,
                     ### this part should then collect data into a new array
                     else:
                         values.append(line.split()[1:])
-                    if re.search(r'[\\]', line) != None:
+                elif line[0:1] == '\\':
+                    if len(values) > 0:
+                        values = list(itertools.chain.from_iterable(values))
+                        eval(currentarray).append(values)
+                        values = list()
+                        Comments.append(line[1:-1])
+                    else:
                         Comments.append(line[1:-1])
                 elif line == '\n' or len(line) < 1:
                     if len(values) > 0:
@@ -968,7 +986,7 @@ def GEToperant(GETprofile, MPCdatafiles, outputfile,
                         lastrow = lastrow + 1
                         for k in range(len(Subject)):
                             if LabelIncrement[i] != None and LabelIncrement[i] > 0:
-                                mainsheet.write(lastrow, 0, Label[i] + ' ' + str(LabelStartValue[i] + x * LabelIncrement[i]))
+                                mainsheet.write(lastrow, 0, Label[i] + ' ' + str(LabelStartValue[i] + int((x-StartElement[i])/ArrayIncrement[i]) * LabelIncrement[i]))
                             else:
                                 mainsheet.write(lastrow, 0, Label[i])
                             if x < len(eval(ArrayVar[i])[k]):
