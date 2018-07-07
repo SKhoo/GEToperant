@@ -283,22 +283,22 @@ def GEToperant(GETprofile, MPCdatafiles, outputfile,
                 # Check for an array header, if it is present, check if values have been entered into
                 # a previous data array. If there are previous data values, flatten the data array and dump them.
                 elif len(line) > 1:
-                    part_check = re.search(r'\D:', line)
-                    if part_check != None and line[0:1] != '\\':
+                    if re.search(r'\D:', line) != None and line[0:1] != '\\':
                         if len(values) > 0:
                             values = list(itertools.chain.from_iterable(values))
                             eval(currentarray).append(values)
                             values = list()
                         ### here we should check for whether the letter has been printed as just a variable.
-                        part_checkb = re.search(r'\d', line)
-                        if part_checkb != None and line[0:1] != '\\':
+                        if re.search(r'\d', line) != None and line[0:1] != '\\':
                             currentarray = line[0]
                             values.append(line.split()[1])
+                            eval(currentarray).append(values)
+                            values = list()
                         ### then we should set the beginning of a new array.
                         else:
                             currentarray = line[0]
                     ### this part checks if the line is a comment and then collects the data
-                    if line[0:1] == '\\':
+                    elif line[0:1] == '\\':
                         if len(values) > 0:
                             values = list(itertools.chain.from_iterable(values))
                             eval(currentarray).append(values)
@@ -434,7 +434,10 @@ def GEToperant(GETprofile, MPCdatafiles, outputfile,
                 if StopElement[i] == None or isinstance(StopElement[i], str):
                     steps = range(StartElement[i], len(max(eval(ArrayVar[i]), key = len)), ArrayIncrement[i])
                 elif StopElement[i] > StartElement[i]:
-                    steps = range(StartElement[i], StopElement[i] + 1, ArrayIncrement[i])
+                    if len(max(eval(ArrayVar[i]), key = len)) < StopElement[i] + 1:
+                        steps = range(StartElement[i], len(max(eval(ArrayVar[i]), key = len)), ArrayIncrement[i])
+                    else:
+                        steps = range(StartElement[i], StopElement[i] + 1, ArrayIncrement[i])
                 for x in steps:
                     lastrow = lastrow + 1
                     for k in range(len(Subject)):
@@ -565,22 +568,22 @@ def GEToperant(GETprofile, MPCdatafiles, outputfile,
                 # Check for an array header, if it is present, check if values have been entered into
                 # a previous data array. If there are previous data values, flatten the data array and dump them.
                 elif len(line) > 1:
-                    part_check = re.search(r'\D:', line)
-                    if part_check != None and line[0:1] != '\\':
+                    if re.search(r'\D:', line) != None and line[0:1] != '\\':
                         if len(values) > 0:
                             values = list(itertools.chain.from_iterable(values))
                             eval(currentarray).append(values)
                             values = list()
                         ### here we should check for whether the letter has been printed as just a variable.
-                        part_checkb = re.search(r'\d', line)
-                        if part_checkb != None and line[0:1] != '\\':
+                        if re.search(r'\d', line) != None and line[0:1] != '\\':
                             currentarray = line[0]
                             values.append(line.split()[1])
+                            eval(currentarray).append(values)
+                            values = list()
                         ### then we should set the beginning of a new array.
                         else:
                             currentarray = line[0]
                     ### this part checks if the line is a comment and then collects the data
-                    if line[0:1] == '\\':
+                    elif line[0:1] == '\\':
                         if len(values) > 0:
                             values = list(itertools.chain.from_iterable(values))
                             eval(currentarray).append(values)
@@ -710,7 +713,10 @@ def GEToperant(GETprofile, MPCdatafiles, outputfile,
                     if StopElement[i] == None or isinstance(StopElement[i], str):
                         steps = range(StartElement[i], len(max(eval(ArrayVar[i]), key = len)), ArrayIncrement[i])
                     elif StopElement[i] > StartElement[i]:
-                        steps = range(StartElement[i], StopElement[i] + 1, ArrayIncrement[i])
+                        if len(max(eval(ArrayVar[i]), key = len)) < StopElement[i] + 1:
+                            steps = range(StartElement[i], len(max(eval(ArrayVar[i]), key = len)), ArrayIncrement[i])
+                        else:
+                            steps = range(StartElement[i], StopElement[i] + 1, ArrayIncrement[i])
                     for x in steps:
                         lastrow = lastrow + 1
                         for k in range(len(Subject)):
@@ -827,22 +833,22 @@ def GEToperant(GETprofile, MPCdatafiles, outputfile,
                 # Check for an array header, if it is present, check if values have been entered into
                 # a previous data array. If there are previous data values, flatten the data array and dump them.
                 elif len(line) > 1:
-                    part_check = re.search(r'\D:', line)
-                    if part_check != None and line[0:1] != '\\':
+                    if re.search(r'\D:', line) != None and line[0:1] != '\\':
                         if len(values) > 0:
                             values = list(itertools.chain.from_iterable(values))
                             eval(currentarray).append(values)
                             values = list()
                         ### here we should check for whether the letter has been printed as just a variable.
-                        part_checkb = re.search(r'\d', line)
-                        if part_checkb != None and line[0:1] != '\\':
+                        if re.search(r'\d', line) != None and line[0:1] != '\\':
                             currentarray = line[0]
                             values.append(line.split()[1])
+                            eval(currentarray).append(values)
+                            values = list()
                         ### then we should set the beginning of a new array.
                         else:
                             currentarray = line[0]
                     ### this part checks if the line is a comment and then collects the data
-                    if line[0:1] == '\\':
+                    elif line[0:1] == '\\':
                         if len(values) > 0:
                             values = list(itertools.chain.from_iterable(values))
                             eval(currentarray).append(values)
@@ -981,7 +987,10 @@ def GEToperant(GETprofile, MPCdatafiles, outputfile,
                     if StopElement[i] == None or isinstance(StopElement[i], str):
                         steps = range(StartElement[i], len(max(eval(ArrayVar[i]), key = len)), ArrayIncrement[i])
                     elif StopElement[i] > StartElement[i]:
-                        steps = range(StartElement[i], StopElement[i] + 1, ArrayIncrement[i])
+                        if len(max(eval(ArrayVar[i]), key = len)) < StopElement[i] + 1:
+                            steps = range(StartElement[i], len(max(eval(ArrayVar[i]), key = len)), ArrayIncrement[i])
+                        else:
+                            steps = range(StartElement[i], StopElement[i] + 1, ArrayIncrement[i])
                     for x in steps:
                         lastrow = lastrow + 1
                         for k in range(len(Subject)):
