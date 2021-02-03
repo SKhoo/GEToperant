@@ -11,7 +11,7 @@ MPC_filenames = None
 #Define functions for the menus
 def openprofile():
     global GETprofile
-    GETprofile = askopenfilename(title = 'Select data profile', filetypes =  [('Excel GEToperant Profile', '*.xlsx'), ('MPC2XL Row Profile', '*.MRP')])
+    GETprofile = askopenfilename(title = 'Select data profile', filetypes =  [('Excel GEToperant Profile', '*.xlsx'), ('Excel 97-2003 GEToperant Profile', '*.xls'), ('MPC2XL Row Profile', '*.MRP')])
 
 def opendata():
     global MPC_filenames
@@ -94,7 +94,7 @@ def convertprofile():
         GEToperant.convertMRP(GETprofile = GETprofile, profileexport = profileexport)
 
 def GETexpress():
-    GETprofile = askopenfilename(title = 'Select data profile', filetypes =  [('Excel GEToperant Profile', '*.xlsx'), ('MPC2XL Row Profile', '*.MRP')])
+    GETprofile = askopenfilename(title = 'Select data profile', filetypes =  [('Excel GEToperant Profile', '*.xlsx'), ('Excel 97-2003 GEToperant Profile', '*.xls'), ('MPC2XL Row Profile', '*.MRP')])
     if len(GETprofile) < 1:
         showerror('Error!', 'Please select a data profile')
         return None
@@ -122,7 +122,7 @@ def GETexpress():
                                   mode = 'Main')
 
 def GETsheets():
-    GETprofile = askopenfilename(title = 'Select data profile', filetypes =  [('Excel GEToperant Profile', '*.xlsx'), ('MPC2XL Row Profile', '*.MRP')])
+    GETprofile = askopenfilename(title = 'Select data profile', filetypes =  [('Excel GEToperant Profile', '*.xlsx'), ('Excel 97-2003 GEToperant Profile', '*.xls'), ('MPC2XL Row Profile', '*.MRP')])
     if len(GETprofile) < 1:
         showerror('Error!', 'Please select a data profile')
         return None
@@ -150,7 +150,7 @@ def GETsheets():
                                   mode = 'Sheets')
 
 def GETbooks():
-    GETprofile = askopenfilename(title = 'Select data profile', filetypes =  [('Excel GEToperant Profile', '*.xlsx'), ('MPC2XL Row Profile', '*.MRP')])
+    GETprofile = askopenfilename(title = 'Select data profile', filetypes =  [('Excel GEToperant Profile', '*.xlsx'), ('Excel 97-2003 GEToperant Profile', '*.xls'), ('MPC2XL Row Profile', '*.MRP')])
     if len(GETprofile) < 1:
         showerror('Error!', 'Please select a data profile')
         return None
@@ -286,21 +286,26 @@ def helpme():
 def aboutGET():
     aboutme = Toplevel()
     aboutme.title('About GEToperant')
-    abouttext = Text(aboutme, height = 22, width = 75)
+    abouttext = Text(aboutme, height = 26, width = 75)
     abouttext.pack(side= 'top')
     abouttext.tag_configure('regular', font=('Verdana', 11))
     about = """
     GEToperant is a general extraction tool for Med-PC®.
     It was designed to be compatible with Med-PC® IV but given how
     little Med-PC® changes, it should be compatible with Med-PC® V.
-    It was written by Shaun Khoo using Python 3.4.4 with the xlrd
-    and xlsxwriter packages. Executable files were produced using pyinstaller.
+    It was originally written by Shaun Khoo using Python 3.4.4 with the xlrd
+    and xlsxwriter packages. It has since been updated to run with Python
+    3.9.1 and now also uses the openpyxl package. Executable files were
+    produced using pyinstaller (Windows) and py2app (Mac).
     
     It is free open source software available under an MIT license.
     You pay nothing and you can do with it as you please.
 
     If you have enjoyed using GEToperant, please tell your friends or
-    reference it in one of your publications.
+    reference it in one of your publications:
+
+    Khoo, S. Y. (2021). GEToperant: A General Extraction Tool for Med-PC
+    Data. Figshare. doi: 10.6084/m9.figshare.13697851
 
     For the latest version and source code visit:
     https://github.com/SKhoo/GEToperant/
@@ -319,7 +324,7 @@ def licenseMIT():
     MITtext = """
     MIT License
 
-    Copyright (c) 2018 Shaun Khoo
+    Copyright (c) 2018-2021 Shaun Khoo
 
     Permission is hereby granted, free of charge, to any person
     obtaining a copy of this software and associated documentation
@@ -353,7 +358,7 @@ root = Tk()
 
 ##Set window size
 root.geometry('876x500')
-root.title('GEToperant v1.0 >(\' . \')<')
+root.title('GEToperant v1.1 >(\' . \')<')
 Montre = PhotoImage(file='icon.pnm')
 root.wm_iconphoto('True', Montre)
 
@@ -458,8 +463,8 @@ class CreateToolTip(object):
             tw.destroy()
 
 class App:
-    def __init__(self, master):
-        frame = Frame(height = 80, width = 876)
+    def __init__(self, root):
+        frame = Frame(height = 50, width = 876)
         frame.grid(row = 3, pady = 15)
         Label(frame, text = 'Export data file(s) to:', font=('Verdana', 10)).grid(row = 0, column = 1)
         self.express = Button(frame, text = '1. Single Worksheet', command = GETexpress, font=('Verdana', 9))
@@ -478,7 +483,10 @@ class App:
         self.convert.grid(row = 2, column = 0, sticky = W, padx = 30)
         self.convert.tip = CreateToolTip(self.convert, "Convert an MPC2XL Row Profile into a GEToperant profile")
         self.exit = Button(frame, text = 'Quit', command = quit, font=('Verdana', 9))
-        self.exit.grid(row = 2, column = 2, sticky = E, padx = 30, pady = 20)
+        self.exit.grid(row = 2, column = 2, sticky = E, padx = 30, pady = 10)
+
+Label(root, text="doi: 10.6084/m9.figshare.13697851").grid(row = 4, ipadx = 12, sticky = E)
+
 
 app = App(root)
 root.mainloop()

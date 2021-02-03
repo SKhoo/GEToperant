@@ -4,6 +4,7 @@
 ### Where an MSN has not used the Y2KCOMPLIANT command, the data was collected in the 21st century.
 
 import xlrd
+from openpyxl import load_workbook
 import xlsxwriter
 import re
 import itertools
@@ -119,6 +120,40 @@ def GEToperant(GETprofile, MPCdatafiles, outputfile,
 
     if 'xlsx' in GETprofile[-4:].lower():
         ### Import an Excel-based GEToperant profile
+        profile_xl = load_workbook(GETprofile)
+        profilesheet = profile_xl.active
+
+        for cell in profilesheet["A"]:
+            Label.append(cell.value)
+
+        for cell in profilesheet["B"]:
+            LabelStartValue.append(cell.value)
+
+        for cell in profilesheet["C"]:
+            LabelIncrement.append(cell.value)
+
+        for cell in profilesheet["D"]:
+            ArrayVar.append(cell.value)
+
+        for cell in profilesheet["E"]:
+            StartElement.append(cell.value)
+
+        for cell in profilesheet["F"]:
+            ArrayIncrement.append(cell.value)
+
+        for cell in profilesheet["G"]:
+            StopElement.append(cell.value)
+
+        Label = Label[1:]
+        LabelStartValue = LabelStartValue[1:]
+        LabelIncrement = LabelIncrement[1:]
+        ArrayVar = ArrayVar[1:]
+        StartElement = StartElement[1:]
+        ArrayIncrement = ArrayIncrement[1:]
+        StopElement = StopElement[1:]
+
+    elif 'xls' in GETprofile[-3:].lower():
+        ### Import an Excel-based GEToperant profile in an older Excel file
         profile_xl = xlrd.open_workbook(GETprofile)
         profile_xl_sheets = profile_xl.sheet_names()
         profilesheet = profile_xl.sheet_by_name(profile_xl_sheets[0])
